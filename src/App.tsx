@@ -45,7 +45,7 @@ const App = () => {
         {task.map((itm ) => (
           <div
             key={itm.id}
-            className="flex justify-between items-center py-2 px-2 w-[365px] h-10 rounded bg-gray-100 shadow"
+            className="flex justify-between items-center py-2 px-2 sm:w-[250px] lg:w-[365px] h-10 rounded bg-gray-100 shadow"
           >
             {itm.task}
             <button onClick={()=>handleDelete(itm.id)} className="cursor-pointer"><TiDeleteOutline/></button>

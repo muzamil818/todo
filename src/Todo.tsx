@@ -29,7 +29,7 @@ const Todo = () => {
     <div className="">
         <form onSubmit={handleSubmit } className="flex gap-3">
           <input type="text" placeholder="Enter your Task" 
-            className="bg-white py-3 w-70 px-3 rounded"
+            className="bg-white py-3 w-45 sm:w-50 lg:w-70 px-3 rounded"
             value={task}
             onChange={(e)=> setTask(e.target.value)}
           />
