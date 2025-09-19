@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { TiDeleteOutline } from "react-icons/ti";
 import Todo from "./Todo";
 import {db} from "./firebase"
-import { collection, onSnapshot, doc, deleteDoc, orderBy, query, Timestamp  } from "firebase/firestore";
+import { collection, onSnapshot, doc, deleteDoc, orderBy, query, Timestamp, where  } from "firebase/firestore";
+import { useUser } from "@clerk/clerk-react";
 
 type types = {
   id: string,
@@ -12,23 +13,30 @@ type types = {
 
 
 const App = () => {
-
-
+  
   const [task, setTask] = useState<types[]>([]);
+  const {user} =  useUser()
 
   useEffect(()=>{
-      const q = query(collection(db,'tasks'), orderBy('createdAt', 'desc'));
+
+    if(!user) return;
+
+    console.log("userId", user.id);
+    
+      const q = query(collection(db,'tasks'), where("userId", '==' , user.id) ,orderBy('createdAt', 'desc'));
 
       const unsubscribe = onSnapshot(q, (snapshot) =>{
+          console.log("the size of snap: ", snapshot.size );
+          
         const taskList = snapshot.docs.map((doc)=>({
           id: doc.id,
-          ...(doc.data() as {task: string, createdAt: Timestamp | null;}),
+          ...(doc.data() as {task: string, createdAt: Timestamp | null, userId: string}),
         }))
         setTask(taskList);
       })
       return () => unsubscribe()
 
-  }, [])
+  }, [user])
 
 
   const handleDelete = async (id: string) => {

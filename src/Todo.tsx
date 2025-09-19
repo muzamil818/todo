@@ -1,19 +1,25 @@
 import { useState } from "react"
 import { collection, addDoc, serverTimestamp  } from "firebase/firestore";
  import { db } from "./firebase"; 
-
+import { useUser } from "@clerk/clerk-react";
 const Todo = () => {
-  const [task, setTask] = useState("");
 
+
+  const [task, setTask] = useState("");
+const {user} = useUser();
   const handleSubmit = async (e: React.FormEvent) =>{
     e.preventDefault()
 
-    if(!task.trim()) return
+    if(!task.trim() || !user) {
+      alert("user is not logged in!");
+      return
+    }
  
       try {
         await addDoc(collection(db,"tasks"), {
           task: task,
           createdAt: serverTimestamp(),
+          userId: user?.id,
         })
         setTask("")
       } catch (error) {
